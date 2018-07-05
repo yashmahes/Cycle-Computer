@@ -122,7 +122,7 @@ namespace CycleComputer
             plotPower();
 
             NormalizedPower = "The Normalized Power is " + getNormalizedPower();
-            PowerBalance = "The Power Balance is ";
+            PowerBalance = "The Power Balance is " + getPowerBalance();
 
         }
 
@@ -459,17 +459,41 @@ namespace CycleComputer
             MessageBox.Show(PowerBalance);
         }
 
+
         /// <summary>
-        /// To get Normalized Power
-        /// Here is the algorithm from the inventor (Andrew Coggan).
-        /// We calculate Normalized Power by:        
-        /// 1. Starting at the beginning of the data and calculating a 30-second rolling average for power;        
-        /// 2. Raising the values obtained in step 1 to the fourth power;        
-        /// 3. Taking the average of all the values obtained in step 2; and        
-        /// 4. Taking the fourth root of the number obtained in step 3. This is Normalized Power.
+        /// In practice, the power balance is a four digit number. This is 16bits (each digit being a 4-bit nybble if you converted it into hexadecimal). The Polar documentation tells us that the lower 8 bits are the power from the left leg and the higher 8 bits are the Pedalling Index. The right leg is then 100-left leg. To get the left leg, we need to isolate the lower 8 bits. We do this with a “mask” (the term meaning the same as taping or masking something off when painting). The mask is in binary. We want the lower 8 bits so the binary mask is:
+
+///%0000000011111111
+
+///I.e.we don’t want the top 8 bits(so all zero), but we do want the lower 8 bits(all 1)
+///If we then logical AND the mask and the power balance field we will be left with the left leg(because 1 & something will leave something and 0 & something will leave 0).
+
+///To get the PI.We need to isolate the top 8 bits, so the mask would be:
+
+///%1111111100000000
+
+///Once we’ve logical ANDed them together we have it isolated but its a big number because the first bit is representing 256s and not 1s.So we need to bit shift it down 8 places using the >> operator.
+
+
         /// </summary>
         /// <returns></returns>
-        private double getNormalizedPower()
+    private int getPowerBalance()
+        {
+            return 4582;
+
+        }
+
+            /// <summary>
+            /// To get Normalized Power
+            /// Here is the algorithm from the inventor (Andrew Coggan).
+            /// We calculate Normalized Power by:        
+            /// 1. Starting at the beginning of the data and calculating a 30-second rolling average for power;        
+            /// 2. Raising the values obtained in step 1 to the fourth power;        
+            /// 3. Taking the average of all the values obtained in step 2; and        
+            /// 4. Taking the fourth root of the number obtained in step 3. This is Normalized Power.
+            /// </summary>
+            /// <returns></returns>
+            private double getNormalizedPower()
         {
             List<double> rollingAvg = new List<double>();
 
