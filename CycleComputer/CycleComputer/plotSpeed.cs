@@ -16,6 +16,11 @@ namespace CycleComputer
         List<int> data;
         string type;
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="str"></param>
         public plotSpeed(List<int> data, string str)
         {
             InitializeComponent();
@@ -23,11 +28,19 @@ namespace CycleComputer
             type = str;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void plotSpeed_Load(object sender, EventArgs e)
         {
             plot();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void plot()
         {
             GraphPane myPane = zedGraphControl1.GraphPane;

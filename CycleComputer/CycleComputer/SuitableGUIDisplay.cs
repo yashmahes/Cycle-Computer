@@ -12,6 +12,10 @@ using ZedGraph;
 
 namespace CycleComputer
 {
+    /// <summary>
+    /// this class is used to get the data from the datafile and show them in suitable GUI and also visualize the data 
+    /// by using charting api - ZedGraph
+    /// </summary>
     public partial class SuitableGUIDisplay : Form
     {
         string startTime = "";
@@ -21,6 +25,8 @@ namespace CycleComputer
         int maxPower = 100000;
         string speedunit = "kph";
 
+        string NormalizedPower;
+        string PowerBalance;
 
          List<int> speed = new List<int>();
          List<int> cadence = new List<int>();
@@ -28,11 +34,20 @@ namespace CycleComputer
          List<int> heartRate = new List<int>();
          List<int> powerInWatts = new List<int>();
 
+        /// <summary>
+        /// This Initializes all Components
+        /// </summary>
         public SuitableGUIDisplay()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// This method is called when SuitableGUIDisplay form is Loaded. This method reads the data from the datafile
+        /// and stores all the necessary information in the suitable variables which will be used in the application to access data.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SuitableGUIDisplay_Load(object sender, EventArgs e)
         {
             richTextBox1.Text = "";
@@ -106,8 +121,14 @@ namespace CycleComputer
             plotHeartRate();
             plotPower();
 
+            NormalizedPower = "The Normalized Power is " + getNormalizedPower();
+            PowerBalance = "The Power Balance is ";
+
         }
 
+        /// <summary>
+        /// this is used to display data in suitable manner in richTextBox1
+        /// </summary>
         private void displayData()
         {
             richTextBox1.Text = "";
@@ -148,6 +169,11 @@ namespace CycleComputer
 
         }
 
+        /// <summary>
+        /// when user clicks on "Display unit of speed as mph" button it will display the data in suitable manner
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
             speedunit = "mph";
@@ -155,6 +181,11 @@ namespace CycleComputer
 
         }
 
+        /// <summary>
+        /// when user clicks on "Display unit of speed as kph" button it will display the data in suitable manner
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button2_Click(object sender, EventArgs e)
         {
             speedunit = "kph";
@@ -162,6 +193,11 @@ namespace CycleComputer
 
         }
 
+        /// <summary>
+        /// After Enter maximum heart rate, when user clicks on "Display data" button it will display the data in suitable manner
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button3_Click(object sender, EventArgs e)
         {
             try
@@ -178,8 +214,12 @@ namespace CycleComputer
 
         }
 
-   
 
+        /// <summary>
+        /// After Enter Functional Threshold Power, when user clicks on "Display data" button it will display the data in suitable manner
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button4_Click(object sender, EventArgs e)
         {
 
@@ -196,6 +236,11 @@ namespace CycleComputer
 
         }
 
+        /// <summary>
+        /// when user clicks on Get summary data button, this method displays the summary data in richTextBox2
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button5_Click(object sender, EventArgs e)
         {
             richTextBox2.Text = "Summary";
@@ -231,7 +276,9 @@ namespace CycleComputer
         }
 
 
-
+        /// <summary>
+        /// This method is used to plotSpeed on zedGraphControl1
+        /// </summary>
         private void plotSpeed()
         {
             GraphPane myPane = zedGraphControl1.GraphPane;
@@ -260,7 +307,9 @@ namespace CycleComputer
             zedGraphControl1.AxisChange();
         }
 
-
+        /// <summary>
+        /// This method is used to plotCadence on zedGraphControl2
+        /// </summary>
         private void plotCadence()
         {
             GraphPane myPane = zedGraphControl2.GraphPane;
@@ -289,7 +338,9 @@ namespace CycleComputer
             zedGraphControl2.AxisChange();
         }
 
-
+        /// <summary>
+        /// This method is used to plot Altitude on zedGraphControl3
+        /// </summary>
         private void plotAltitude()
         {
             GraphPane myPane = zedGraphControl3.GraphPane;
@@ -319,6 +370,9 @@ namespace CycleComputer
         }
 
 
+        /// <summary>
+        /// This method is used to plot Heart Rate on zedGraphControl4
+        /// </summary>
         private void plotHeartRate()
         {
             GraphPane myPane = zedGraphControl4.GraphPane;
@@ -348,7 +402,9 @@ namespace CycleComputer
         }
 
 
-
+        /// <summary>
+        /// This method is used to plot power on zedGraphControl5
+        /// </summary>
         private void plotPower()
         {
             GraphPane myPane = zedGraphControl5.GraphPane;
@@ -391,6 +447,72 @@ namespace CycleComputer
         {
             Visualization_Form visualization_Form = new Visualization_Form(speed, cadence, altitude, heartRate, powerInWatts);
             visualization_Form.Show();
+        }
+
+        /// <summary>
+        /// To get Power Balance
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button7_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(PowerBalance);
+        }
+
+        /// <summary>
+        /// To get Normalized Power
+        /// Here is the algorithm from the inventor (Andrew Coggan).
+        /// We calculate Normalized Power by:        
+        /// 1. Starting at the beginning of the data and calculating a 30-second rolling average for power;        
+        /// 2. Raising the values obtained in step 1 to the fourth power;        
+        /// 3. Taking the average of all the values obtained in step 2; and        
+        /// 4. Taking the fourth root of the number obtained in step 3. This is Normalized Power.
+        /// </summary>
+        /// <returns></returns>
+        private double getNormalizedPower()
+        {
+            List<double> rollingAvg = new List<double>();
+
+            // Starting at the beginning of the data and calculating a 30-second rolling average for power; 
+            for (int i=30; i< powerInWatts.Count + 1; i++)
+            {
+                int summ = 0;
+                for(int j = i-30; j < i; j++)
+                {
+                    summ += powerInWatts[j];
+                }
+
+                double avg = summ / 30;
+                rollingAvg.Add(avg);
+
+            }
+
+
+            //2. Raising the values obtained in step 1 to the fourth power; 
+            for(int i=0; i< rollingAvg.Count; i++)
+            {
+                rollingAvg[i] = Math.Pow(rollingAvg[i], 4);
+            }
+
+            //3. Taking the average of all the values obtained in step 2;
+            double myaverage = rollingAvg.Average();
+
+            //4. Taking the fourth root of the number obtained in step 3
+            double ans = Math.Pow(myaverage, 0.25);
+
+            return ans;
+
+        }
+
+
+        /// <summary>
+        /// To get Normalized Power
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button8_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(NormalizedPower);
         }
     }
 }

@@ -12,6 +12,9 @@ namespace CycleComputer
 {
     public partial class Form1 : Form
     {
+        /// <summary>
+        /// filename is used to store the path of data file
+        /// </summary>
         public static string filename;
 
         public Form1()
@@ -34,6 +37,11 @@ namespace CycleComputer
         }
 
 
+        /// <summary>
+        /// When user browse the computer to select the data file. This method is used to browse and select the data file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
 
         {
@@ -81,6 +89,11 @@ namespace CycleComputer
 
         }
 
+        /// <summary>
+        /// This method is used to fetch data and display it on new form : Data_Form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button2_Click(object sender, EventArgs e)
         {
             

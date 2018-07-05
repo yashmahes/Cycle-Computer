@@ -20,6 +20,11 @@ namespace CycleComputer
             InitializeComponent();
         }
 
+        /// <summary>
+        /// This method reads the file and displays all the data store in the filename in richTextBox1 and richTextBox2
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Data_Form_Load(object sender, EventArgs e)
         {
             richTextBox1.Text = "";
@@ -73,6 +78,11 @@ namespace CycleComputer
 
         }
 
+        /// <summary>
+        /// This method redirects the user to new window which displays the data in well defined format
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
             SuitableGUIDisplay suitableGUIDisplay = new SuitableGUIDisplay();
