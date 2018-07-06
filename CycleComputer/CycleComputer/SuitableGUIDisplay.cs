@@ -18,6 +18,7 @@ namespace CycleComputer
     /// </summary>
     public partial class SuitableGUIDisplay : Form
     {
+        string filename;
         string startTime = "";
         string date = "";
 
@@ -37,8 +38,9 @@ namespace CycleComputer
         /// <summary>
         /// This Initializes all Components
         /// </summary>
-        public SuitableGUIDisplay()
+        public SuitableGUIDisplay(string filename)
         {
+            this.filename = filename;
             InitializeComponent();
         }
 
@@ -50,13 +52,14 @@ namespace CycleComputer
         /// <param name="e"></param>
         private void SuitableGUIDisplay_Load(object sender, EventArgs e)
         {
+            label3.Text = filename;
             richTextBox1.Text = "";
             int counter = 0;
             string line;
 
             // Read the file   
             System.IO.StreamReader file =
-                new System.IO.StreamReader(@Form1.filename);
+                new System.IO.StreamReader(filename);
 
             while ((line = file.ReadLine()) != null)
             {

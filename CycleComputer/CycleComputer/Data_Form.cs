@@ -13,9 +13,11 @@ namespace CycleComputer
 {
     public partial class Data_Form : Form
     {
-        public Data_Form()
+        public string filename;
+        public Data_Form(string filename)
         {
-            
+            this.filename = filename;
+
 
             InitializeComponent();
         }
@@ -27,6 +29,7 @@ namespace CycleComputer
         /// <param name="e"></param>
         private void Data_Form_Load(object sender, EventArgs e)
         {
+            label3.Text = filename;
             richTextBox1.Text = "";
             int counter = 0;
             string line;
@@ -35,7 +38,7 @@ namespace CycleComputer
             {
                 // Read the file.  
                 System.IO.StreamReader file =
-                    new System.IO.StreamReader(@Form1.filename);
+                    new System.IO.StreamReader(filename);
                 while ((line = file.ReadLine()) != null)
                 {
                     richTextBox1.Text += "\n\n";
@@ -85,7 +88,7 @@ namespace CycleComputer
         /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
-            SuitableGUIDisplay suitableGUIDisplay = new SuitableGUIDisplay();
+            SuitableGUIDisplay suitableGUIDisplay = new SuitableGUIDisplay(filename);
             suitableGUIDisplay.Show();
         }
     }
